@@ -22,17 +22,19 @@ function createGrowthModel (lengthToWingspan, leavesEatenToWeight) {
  * @return a GrowthModel object
  */
 function averageGrowthModel (growthModels) {
-  if (growthModels.length === 0 || growthModels === undefined) {
-    return undefined
+  if (growthModels.length > 0) {
+    let div = growthModels.length
+    let sum = (acc, next) => createGrowthModel(
+        acc.lengthToWingspan + next.lengthToWingspan,
+        acc.leavesEatenToWeight + next.leavesEatenToWeight
+    )
+    let summed = growthModels.reduce(sum, createGrowthModel(0, 0))
+    return createGrowthModel(
+      summed.lengthToWingspan / div,
+      summed.leavesEatenToWeight / div
+    )
   }
-  let div = growthModels.length - 1
-  let sum = (acc, next) => {
-    createGrowthModel(
-      acc.lengthToWingspan / div + next.lengthToWingspan / div,
-      acc.leavesEatenToWeight / div + next.leavesEatenToWeight / div
-  ) }
-  // TODO: implement using Array.prototype.reduce()
-  return growthModels.reduce(sum, 0)
+  else return undefined
 }
 
 module.exports = {
